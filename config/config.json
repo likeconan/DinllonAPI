@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "pgre123",
+    "database": "dinllon_dev",
+    "host": "localhost",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "pgre123",
+    "database": "dinllon_test",
+    "host": "localhost",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "production": {
+   "username": "postgres",
+    "password": "pgre123",
+    "database": "dinllon_production",
+    "host": "localhost",
+    "port": "5432",
+    "dialect": "postgres"
+  }
+}
