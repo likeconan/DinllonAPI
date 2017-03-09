@@ -8,6 +8,18 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: DataTypes.UUIDV4
         },
         nickName: DataTypes.STRING,
+        password: {
+            allowNull: false,
+            type: DataTypes.STRING,
+            validate: {
+                len: {
+                    args: [
+                        6, 25
+                    ],
+                    msg: "The password should be between 6-25"
+                }
+            }
+        },
         goingOn: DataTypes.STRING,
         school: DataTypes.STRING,
         work: DataTypes.STRING,
@@ -22,6 +34,9 @@ module.exports = function (sequelize, DataTypes) {
             validate: {
                 notEmpty: {
                     msg: 'Mobile is a required field'
+                },
+                isNumeric: {
+                    msg: 'Please enter valid mobile'
                 }
             }
         },
