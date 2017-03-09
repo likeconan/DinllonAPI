@@ -60,80 +60,10 @@ module.exports = {
       }
     })
 
-    //Activities table
-    queryInterface.createTable('Activities', {
-      uuid: {
-        allowNull: false,
-        primaryKey: true,
-        type: Sequelize.UUID
-      },
-      textContent: {
-        type: Sequelize.STRING
-      },
-      userId: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: { model: 'Users', key: 'uuid' }
-      },
-      startedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      cost: {
-        allowNull: false,
-        type: Sequelize.DECIMAL(10, 2),
-      },
-      type: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      isDeleted: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
-    });
-
-    //Moments table
-    queryInterface.createTable('Moments', {
-      uuid: {
-        allowNull: false,
-        primaryKey: true,
-        type: Sequelize.UUID
-      },
-      textContent: {
-        type: Sequelize.STRING
-      },
-      userId: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: { model: 'Users', key: 'uuid' }
-      },
-      isDeleted: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
-    });
-
+    
   },
   down: function (queryInterface, Sequelize) {
     queryInterface.dropTable('Users');
-    queryInterface.dropTable('Activities');
-    queryInterface.dropTable('Moments');
+    
   }
 };

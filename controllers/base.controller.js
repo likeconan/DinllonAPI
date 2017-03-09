@@ -1,9 +1,8 @@
 class BaseController {
-    constructor(lib) {
+    constructor(db) {
         this.actions = [];
         this.server = null;
-        this.db = lib.db;
-        this.rm = lib.returnModel;
+        this.db = db;
     }
 
     setUpActions(app) {
@@ -23,39 +22,39 @@ class BaseController {
             .push(newAct)
     }
 
-    excuteDb(spec, res, next) {
-        return new Promise((resolve, reject) => {
-            try {
-                this
-                    .db[spec.dbModel][spec.method](spec.object)
-                    .then((obj) => {
-                        resolve(obj);
-                    })
-                    .catch((err) => {
-                        try {
-                            var errors = err.errors && err.errors.length > 0
-                                ? err
-                                : [
-                                    {
-                                        name: err.name,
-                                        message: err.original.constraint + "." + err.original.code
-                                    }
-                                ];
+    excuteDb(res, next, spec, action) {
+        try {
+            this
+                .db[spec.dbModel][spec.method](spec.object)
+                .then((data) => {
+                    try {
+                        action(data);
+                    } catch (error) {
+                        res.send(500, error);
+                    }
+                })
+                .catch((err) => {
+                    try {
+                        var errors = err.errors && err.errors.length > 0
+                            ? err.errors
+                            : [
+                                {
+                                    name: err.name,
+                                    message: err.original.constraint + "." + err.original.code
+                                }
+                            ];
+                        res.send({isSuccess: false, errors: errors});
+                        next();
+                    } catch (error) {
+                        res.send(500, error);
+                        next();
+                    }
 
-                            res.send(new this.rm.BaseReturnModel(null, errors));
-                            next();
-                        } catch (error) {
-                            res.send(500, error);
-                            next();
-                        }
-
-                    })
-            } catch (error) {
-                res.send(500, error);
-                next();
-            }
-
-        })
+                })
+        } catch (error) {
+            res.send(500, error);
+            next();
+        }
 
     }
 

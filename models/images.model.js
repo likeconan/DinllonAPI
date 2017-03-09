@@ -1,19 +1,23 @@
 'use strict';
 module.exports = function (sequelize, DataTypes) {
-    var Moments = sequelize.define('Moments', {
+    var Images = sequelize.define('Images', {
         uuid: {
             type: DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        textContent: {
+        url: {
+            allowNull: false,
             type: DataTypes.STRING
         },
-        userId: {
+        imageType: {
+            allowNull: false,
+            type: DataTypes.STRING
+        },
+        momentId: {
             allowNull: false,
             type: DataTypes.UUID
-
         },
         isDeleted: {
             type: DataTypes.BOOLEAN
@@ -25,5 +29,5 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     });
-    return Moments;
+    return Images;
 };

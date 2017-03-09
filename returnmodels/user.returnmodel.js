@@ -1,10 +1,10 @@
-var BaseReturnModel = require('./base.returnmodel');
-
-class UserReturnModel extends BaseReturnModel {
-    constructor(data, errors) {
+class UserReturnModel {
+    constructor(data) {
+        this.isSuccess = true;
         data = Object.assign({}, data);
-        delete data['password']
-        super(data, errors);
-
+        delete data.dataValues['password'];
+        this.data = data.dataValues;
     }
 }
+
+module.exports = UserReturnModel;
