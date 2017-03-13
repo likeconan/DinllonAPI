@@ -1,12 +1,13 @@
 var BaseCtrl = require('./base.controller');
+var fs = require('fs');
 
-class ImagesController extends BaseCtrl {
-    constructor(lib) {
-        super(lib);
-        this.initalAction();
+class MomentController extends BaseCtrl {
+    constructor(db) {
+        super(db);
+        this.initalAction(db);
 
     }
-    initalAction() {
+    initalAction(db) {
 
         //Get moments
         super.addAction({
@@ -17,16 +18,26 @@ class ImagesController extends BaseCtrl {
                 dbModel: 'Moments',
                 method: 'findAll',
                 object: {
+                    limit: 10,
+                    offset: req.params.offset,
                     where: {
                         isDeleted: false
                     },
                     order: [
                         ['createdAt', 'DESC']
-                    ]
+                    ],
+                    include: [{
+                        model: db.Users,
+                        attributes: {
+                            exclude: ['password']
+                        },
+                    }, {
+                        model: db.Images,
+                        attributes: ['url']
+                    }]
                 }
             }, (data) => {
-
-                res.send()
+                res.send({ isSuccess: true, data: data })
                 next();
             });
 
@@ -42,14 +53,14 @@ class ImagesController extends BaseCtrl {
                 method: 'create',
                 object: req.params
             }, (data) => {
-
-                res.send()
-                next();
+                req.relatedId = data.dataValues.uuid;
+                req.fromType = 'moment';
+                req.resData = data;
+                next('create_image');
             });
-
         });
 
     }
 }
 
-module.exports = ImagesController
+module.exports = MomentController

@@ -10,15 +10,11 @@ module.exports = {
       return queryInterface.createTable('users', { id: Sequelize.INTEGER });
     */
 
-    //Activities table
-    queryInterface.createTable('Activities', {
+    queryInterface.createTable('JoinActivities', {
       uuid: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID
-      },
-      textContent: {
-        type: Sequelize.STRING
       },
       userId: {
         allowNull: false,
@@ -28,53 +24,21 @@ module.exports = {
           key: 'uuid'
         }
       },
-      startedAt: {
+      activityId: {
         allowNull: false,
-        type: Sequelize.DATE
-      },
-      cost: {
-        allowNull: false,
-        type: Sequelize.DECIMAL(10, 2)
-      },
-      type: {
-        allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        references: {
+          model: 'Activities',
+          key: 'uuid'
+        }
       },
       status: {
         type: Sequelize.INTEGER,
         defaultValue: 1
       },
-      isDeleted: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      createdAt: {
+      informEmail: {
         allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
-    }, { logging: console.log });
-
-    //Moments table
-    queryInterface.createTable('Moments', {
-      uuid: {
-        allowNull: false,
-        primaryKey: true,
-        type: Sequelize.UUID
-      },
-      textContent: {
-        type: Sequelize.STRING
-      },
-      userId: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: {
-          model: 'Users',
-          key: 'uuid'
-        }
+        type: Sequelize.STRING,
       },
       isDeleted: {
         type: Sequelize.BOOLEAN,
@@ -88,8 +52,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, { logging: console.log });
-
+    });
   },
 
   down: function (queryInterface, Sequelize) {
@@ -100,8 +63,6 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-
-    queryInterface.dropTable('Activities');
-    queryInterface.dropTable('Moments');
+    queryInterface.dropTable('JoinActivities');
   }
 };

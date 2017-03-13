@@ -1,25 +1,26 @@
 var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
-class ActivityController extends BaseCtrl {
+class JoinActivityController extends BaseCtrl {
     constructor(db) {
         super(db);
         this.initalAction(db);
     }
     initalAction(db) {
 
-        //Get moments
+        //Get joined activities
         super.addAction({
-            path: '/activities',
+            path: '/activities/join/:activityId',
             method: 'GET'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
-                dbModel: 'Activities',
+                dbModel: 'JoinActivities',
                 method: 'findAll',
                 object: {
-                    limit: 1,
+                    limit: 10,
                     offset: req.params.offset,
                     where: {
+                        activityId: req.params.activityId,
                         isDeleted: false
                     },
                     order: [
@@ -30,9 +31,6 @@ class ActivityController extends BaseCtrl {
                         attributes: {
                             exclude: ['password']
                         },
-                    }, {
-                        model: db.Images,
-                        attributes: ['url']
                     }]
                 }
             }, (data) => {
@@ -42,24 +40,40 @@ class ActivityController extends BaseCtrl {
 
         });
 
-        //Create a moment
+        //Join a activity
         super.addAction({
-            path: '/activities',
+            path: '/activities/join',
             method: 'POST'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
-                dbModel: 'Activities',
+                dbModel: 'JoinActivities',
                 method: 'create',
                 object: req.params
             }, (data) => {
-                req.relatedId = data.dataValues.uuid;
-                req.fromType = 'activity';
-                req.resData = data;
-                next('create_image');
+                res.send({ isSuccess: true, data: data });
+            });
+        });
+
+        //Join a activity
+        super.addAction({
+            path: '/activities/join',
+            method: 'PUT'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'JoinActivities',
+                method: 'update',
+                object: req.params,
+                options: {
+                    where: {
+                        uuid: req.params.uuid
+                    }
+                }
+            }, (data) => {
+                res.send({ isSuccess: true, data: data });
             });
         });
 
     }
 }
 
-module.exports = ActivityController
+module.exports = JoinActivityController

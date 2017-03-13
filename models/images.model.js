@@ -15,19 +15,26 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             type: DataTypes.STRING
         },
-        momentId: {
+        from: {
             allowNull: false,
-            type: DataTypes.UUID
+            type: DataTypes.STRING
+        },
+        relatedId: {
+            allowNull: false,
+            type: DataTypes.UUID,
         },
         isDeleted: {
             type: DataTypes.BOOLEAN
         }
-    }, {
-        classMethods: {
-            associate: function (models) {
-                // associations can be defined here
+    },
+        {
+            classMethods: {
+                associate: function (models) {
+                    // associations can be defined here
+                    models.Images.belongsTo(models.Moments, { foreignKey: 'relatedId', constraints: false })
+                    models.Images.belongsTo(models.Activities, { foreignKey: 'relatedId', constraints: false })
+                }
             }
-        }
-    });
+        });
     return Images;
 };

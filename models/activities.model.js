@@ -13,7 +13,11 @@ module.exports = function (sequelize, DataTypes) {
             },
             userId: {
                 allowNull: false,
-                type: DataTypes.UUID
+                type: DataTypes.UUID,
+                references: {
+                    model: 'Users',
+                    key: 'uuid'
+                }
             },
             startedAt: {
                 allowNull: false,
@@ -26,6 +30,11 @@ module.exports = function (sequelize, DataTypes) {
             type: {
                 allowNull: false,
                 type: DataTypes.INTEGER,
+                // 1 for AA; 2 for myTreat; 3 for free
+            },
+            status: {
+                type: DataTypes.INTEGER
+                //1 for created; 2 for inprogress; 3 for success; 4 for failed
             },
             isDeleted: {
                 type: DataTypes.BOOLEAN,
@@ -35,6 +44,8 @@ module.exports = function (sequelize, DataTypes) {
             classMethods: {
                 associate: function (models) {
                     // associations can be defined here
+                    models.Activities.belongsTo(models.Users, { foreignKey: 'userId' })
+                    models.Activities.hasMany(models.Images, { foreignKey: 'relatedId', constraints: false })
                 }
             }
         });

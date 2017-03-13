@@ -9,13 +9,13 @@ class BaseController {
         this.server = app;
         for (let act of this.actions) {
             var method = act['spec']['method'];
-            app[method.toLowerCase()](act['spec']['path'], act['action']);
+            app[method.toLowerCase()]({ name: act['spec']['name'], path: act['spec']['path'] }, act['action']);
         }
     }
     addAction(spec, fn) {
         var newAct = {
             'spec': spec,
-            action: fn
+            action: fn,
         }
         this
             .actions
@@ -24,15 +24,21 @@ class BaseController {
 
     excuteDb(res, next, spec, action) {
         try {
-            this
-                .db[spec.dbModel][spec.method](spec.object)
-                .then((data) => {
-                    try {
+            var process = spec.options ?
+                this
+                    .db[spec.dbModel][spec.method](spec.object, spec.options) :
+                this
+                    .db[spec.dbModel][spec.method](spec.object);
+
+            process.then((data) => {
+                try {
+                    if (action) {
                         action(data);
-                    } catch (error) {
-                        res.send(500, error);
                     }
-                })
+                } catch (error) {
+                    res.send(500, error);
+                }
+            })
                 .catch((err) => {
                     try {
                         var errors = err.errors && err.errors.length > 0
@@ -43,7 +49,7 @@ class BaseController {
                                     message: err.original.constraint + "." + err.original.code
                                 }
                             ];
-                        res.send({isSuccess: false, errors: errors});
+                        res.send({ isSuccess: false, errors: errors });
                         next();
                     } catch (error) {
                         res.send(500, error);
@@ -57,7 +63,6 @@ class BaseController {
         }
 
     }
-
 }
 
 module.exports = BaseController;

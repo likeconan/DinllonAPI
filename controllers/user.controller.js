@@ -2,8 +2,8 @@ var BaseCtrl = require('./base.controller');
 var UserReturnModel = require('../returnmodels').UserReturnModel;
 
 class UserController extends BaseCtrl {
-    constructor(lib) {
-        super(lib);
+    constructor(db) {
+        super(db);
         this.initalAction();
 
     }
@@ -24,10 +24,12 @@ class UserController extends BaseCtrl {
                     where: {
                         isDeleted: false
                     },
-                    order: [['createdAt','DESC']]
+                    order: [
+                        ['createdAt', 'DESC']
+                    ]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data});
+                res.send({ isSuccess: true, data: data });
                 next();
             });
 
