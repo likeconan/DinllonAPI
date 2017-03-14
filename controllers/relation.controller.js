@@ -1,25 +1,26 @@
 var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
-class ActivityController extends BaseCtrl {
+class RelationController extends BaseCtrl {
     constructor(db) {
         super(db);
         this.initalAction(db);
     }
     initalAction(db) {
 
-        //Get moments
+        //Get all my friends
         super.addAction({
-            path: '/activities',
+            path: '/relations/:userId',
             method: 'GET'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
-                dbModel: 'Activities',
+                dbModel: 'relations',
                 method: 'findAll',
                 object: {
-                    limit: 1,
+                    limit: 10,
                     offset: req.params.offset,
                     where: {
+                        userId: req.params.userId,
                         isDeleted: false
                     },
                     order: [
@@ -29,11 +30,8 @@ class ActivityController extends BaseCtrl {
                         {
                             model: db.Users,
                             attributes: {
-                                exclude: ['password', 'mobile', 'wechat']
+                                exclude: ['password', 'wechat', 'mobile']
                             }
-                        }, {
-                            model: db.Images,
-                            attributes: ['url']
                         }
                     ]
                 }
@@ -44,24 +42,23 @@ class ActivityController extends BaseCtrl {
 
         });
 
-        //Create a activity
+        //ask for relation
         super.addAction({
-            path: '/activities',
+            path: '/relations',
             method: 'POST'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
-                dbModel: 'Activities',
-                method: 'create',
+                dbModel: 'Relations',
+                method: 'upsert',
                 object: req.params
             }, (data) => {
-                req.relatedId = data.dataValues.uuid;
-                req.fromType = 'activity';
-                req.resData = data;
-                next('create_image');
+                res.send({isSuccess: true, data: data});
             });
         });
+
+        
 
     }
 }
 
-module.exports = ActivityController
+module.exports = RelationController

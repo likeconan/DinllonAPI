@@ -1,10 +1,10 @@
 'use strict';
 module.exports = function (sequelize, DataTypes) {
-    var InviteActivities = sequelize.define('InviteActivities', {
+    var Appraises = sequelize.define('Appraises', {
         uuid: {
-            type: DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
+            type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4
         },
         userId: {
@@ -15,7 +15,7 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'uuid'
             }
         },
-        activityId: {
+        basedOnActivityId: {
             allowNull: false,
             type: DataTypes.UUID,
             references: {
@@ -23,7 +23,7 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'uuid'
             }
         },
-        invitedBy: {
+        appraisedBy: {
             allowNull: false,
             type: DataTypes.UUID,
             references: {
@@ -31,28 +31,40 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'uuid'
             }
         },
-        status: {
-            type: DataTypes.INTEGER,
-            //1 for invited 2 for accept 3 for refuse
+        isLate: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        appraiseText: {
+            type: DataTypes.STRING
+        },
+        isDislike: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        isShow: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
         },
         isDeleted: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {
         classMethods: {
             associate: function (models) {
                 // associations can be defined here
                 models
-                    .InviteActivities
-                    .hasOne(models.JoinActivities, {foreignKey: 'inviteId'})
+                    .Appraises
+                    .belongsTo(models.Users, {foreignKey: 'userId'});
                 models
-                    .InviteActivities
-                    .belongsTo(models.Users, {foreignKey: 'userId'})
+                    .Appraises
+                    .belongsTo(models.Users, {foreignKey: 'appraisedBy'});
                 models
-                    .InviteActivities
-                    .belongsTo(models.Users, {foreignKey: 'invitedBy'})
+                    .Appraises
+                    .belongsTo(models.Activities, {foreignKey: 'basedOnActivityId'});
             }
         }
     });
-    return InviteActivities;
+    return Appraises;
 };

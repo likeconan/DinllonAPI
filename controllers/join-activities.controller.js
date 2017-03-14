@@ -26,15 +26,17 @@ class JoinActivityController extends BaseCtrl {
                     order: [
                         ['createdAt', 'DESC']
                     ],
-                    include: [{
-                        model: db.Users,
-                        attributes: {
-                            exclude: ['password']
-                        },
-                    }]
+                    include: [
+                        {
+                            model: db.Users,
+                            attributes: {
+                                exclude: ['password', 'mobile', 'wechat']
+                            }
+                        }
+                    ]
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data })
+                res.send({isSuccess: true, data: data})
                 next();
             });
 
@@ -50,11 +52,11 @@ class JoinActivityController extends BaseCtrl {
                 method: 'create',
                 object: req.params
             }, (data) => {
-                res.send({ isSuccess: true, data: data });
+                res.send({isSuccess: true, data: data});
             });
         });
 
-        //Join a activity
+        //Edit joined people
         super.addAction({
             path: '/activities/join',
             method: 'PUT'
@@ -69,7 +71,7 @@ class JoinActivityController extends BaseCtrl {
                     }
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data });
+                res.send({isSuccess: true, data: data});
             });
         });
 

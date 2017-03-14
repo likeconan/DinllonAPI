@@ -26,21 +26,57 @@ class InviteActivityController extends BaseCtrl {
                     order: [
                         ['createdAt', 'DESC']
                     ],
-                    include: [{
-                        model: db.Users,
-                        attributes: {
-                            exclude: ['password']
-                        },
-                    }]
+                    include: [
+                        {
+                            model: db.Users,
+                            attributes: {
+                                exclude: ['password', 'wechat', 'mobile']
+                            }
+                        }
+                    ]
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data })
+                res.send({isSuccess: true, data: data})
                 next();
             });
 
         });
 
-        //invite a activity
+        //Get my inviting
+        super.addAction({
+            path: '/activities/invite/by/:userId',
+            method: 'GET'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'InviteActivities',
+                method: 'findAll',
+                object: {
+                    limit: 10,
+                    offset: req.params.offset,
+                    where: {
+                        invitedBy: req.params.userId,
+                        isDeleted: false
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                    ],
+                    include: [
+                        {
+                            model: db.Users,
+                            attributes: {
+                                exclude: ['password', 'wechat', 'mobile']
+                            }
+                        }
+                    ]
+                }
+            }, (data) => {
+                res.send({isSuccess: true, data: data})
+                next();
+            });
+
+        });
+
+        //invite to a activity
         super.addAction({
             path: '/activities/invite',
             method: 'POST'
@@ -50,11 +86,11 @@ class InviteActivityController extends BaseCtrl {
                 method: 'create',
                 object: req.params
             }, (data) => {
-                res.send({ isSuccess: true, data: data });
+                res.send({isSuccess: true, data: data});
             });
         });
 
-        //invite a activity
+        //accept invited data
         super.addAction({
             path: '/activities/invite',
             method: 'PUT'
@@ -69,7 +105,7 @@ class InviteActivityController extends BaseCtrl {
                     }
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data });
+                res.send({isSuccess: true, data: data});
             });
         });
 

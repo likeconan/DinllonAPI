@@ -1,10 +1,10 @@
 'use strict';
 module.exports = function (sequelize, DataTypes) {
-    var InviteActivities = sequelize.define('InviteActivities', {
+    var Relations = sequelize.define('Relations', {
         uuid: {
-            type: DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
+            type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4
         },
         userId: {
@@ -15,15 +15,7 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'uuid'
             }
         },
-        activityId: {
-            allowNull: false,
-            type: DataTypes.UUID,
-            references: {
-                model: 'Activities',
-                key: 'uuid'
-            }
-        },
-        invitedBy: {
+        relatedUserId: {
             allowNull: false,
             type: DataTypes.UUID,
             references: {
@@ -33,26 +25,25 @@ module.exports = function (sequelize, DataTypes) {
         },
         status: {
             type: DataTypes.INTEGER,
-            //1 for invited 2 for accept 3 for refuse
+            defaultValue: 1
         },
         isDeleted: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {
         classMethods: {
             associate: function (models) {
                 // associations can be defined here
                 models
-                    .InviteActivities
-                    .hasOne(models.JoinActivities, {foreignKey: 'inviteId'})
+                    .Relations
+                    .belongsTo(models.Users, {foreignKey: 'userId'});
                 models
-                    .InviteActivities
-                    .belongsTo(models.Users, {foreignKey: 'userId'})
-                models
-                    .InviteActivities
-                    .belongsTo(models.Users, {foreignKey: 'invitedBy'})
+                    .Relations
+                    .belongsTo(models.Users, {foreignKey: 'relatedUserId'});
+
             }
         }
     });
-    return InviteActivities;
+    return Relations;
 };
