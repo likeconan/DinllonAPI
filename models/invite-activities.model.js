@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function (sequelize, DataTypes) {
-    var JoinActivities = sequelize.define('JoinActivities', {
+    var InviteActivities = sequelize.define('InviteActivities', {
         uuid: {
             type: DataTypes.UUID,
             allowNull: false,
@@ -23,20 +23,17 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'uuid'
             }
         },
-        inviteId: {
+        invitedBy: {
+            allowNull: false,
             type: DataTypes.UUID,
             references: {
-                model: 'InviteActivities',
+                model: 'Users',
                 key: 'uuid'
             }
         },
         status: {
             type: DataTypes.INTEGER,
-            //1 for apply;2 for accepted; 3 for refused
-        },
-        informEmail: {
-            allowNull: false,
-            type: DataTypes.STRING,
+            //1 for invited 2 for accept 3 for refuse
         },
         isDeleted: {
             type: DataTypes.BOOLEAN
@@ -46,10 +43,11 @@ module.exports = function (sequelize, DataTypes) {
             classMethods: {
                 associate: function (models) {
                     // associations can be defined here
-                    models.JoinActivities.belongsTo(models.Users, { foreignKey: 'userId' })
-                    models.JoinActivities.belongsTo(models.Activities, { foreignKey: 'activityId' })
+                    models.InviteActivities.hasOne(models.JoinActivities, { foreignKey: 'inviteId' })
+                    models.InviteActivities.belongsTo(models.Users, { foreignKey: 'userId' })
+                    models.InviteActivities.belongsTo(models.Users, { foreignKey: 'invitedBy' })
                 }
             }
         });
-    return JoinActivities;
+    return InviteActivities;
 };
