@@ -18,9 +18,9 @@ server.use(restify.bodyParser({
     hash: 'sha1'
 }));
 
-restify.defaultResponseHeaders = function (data) {
-    this.header('Access-Control-Allow-Origin', '*');
-}
+server.use(restify.CORS({
+    origins: ['http://localhost:3000'],
+}))
 
 /**
 Validate each request, as long as there is a schema for it
