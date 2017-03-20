@@ -16,7 +16,7 @@
     "dialect": "postgres"
   },
   "production": {
-   "username": "postgres",
+    "username": "postgres",
     "password": "pgre123",
     "database": "dinllon_production",
     "host": "localhost",

@@ -2,11 +2,11 @@ var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
 class ActivityController extends BaseCtrl {
-    constructor(db) {
-        super(db);
-        this.initalAction(db);
+    constructor(lib) {
+        super(lib);
+        this.initalAction(lib);
     }
-    initalAction(db) {
+    initalAction(lib) {
 
         //Get moments
         super.addAction({
@@ -27,18 +27,18 @@ class ActivityController extends BaseCtrl {
                     ],
                     include: [
                         {
-                            model: db.Users,
+                            model: lib.db.Users,
                             attributes: {
                                 exclude: ['password', 'mobile', 'wechat']
                             }
                         }, {
-                            model: db.Images,
+                            model: lib.db.Images,
                             attributes: ['url']
                         }
                     ]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data})
+                res.send({ isSuccess: true, data: data })
                 next();
             });
 

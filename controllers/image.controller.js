@@ -1,10 +1,9 @@
 var BaseCtrl = require('./base.controller');
-
+var path = require('path');
 class ImageController extends BaseCtrl {
-    constructor(db) {
-        super(db);
+    constructor(lib) {
+        super(lib);
         this.initalAction();
-
     }
     initalAction() {
 
@@ -17,8 +16,10 @@ class ImageController extends BaseCtrl {
             var images = [];
             for (var key in req.files) {
                 var file = req.files[key];
+                var url = '/original/' + path.basename(file.path)
                 images.push({
-                    url: file.path,
+                    url: url,
+                    path: file.path,
                     imageType: 'original',
                     from: req.fromType,
                     relatedId: req.relatedId,

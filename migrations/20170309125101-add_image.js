@@ -20,6 +20,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      path: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       imageType: {
         allowNull: false,
         type: Sequelize.STRING
@@ -40,7 +44,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, {logging: console.log});
+    }, { logging: console.log });
   },
 
   down: function (queryInterface, Sequelize) {

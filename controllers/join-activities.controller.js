@@ -2,11 +2,11 @@ var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
 class JoinActivityController extends BaseCtrl {
-    constructor(db) {
-        super(db);
-        this.initalAction(db);
+    constructor(lib) {
+        super(lib);
+        this.initalAction(lib);
     }
-    initalAction(db) {
+    initalAction(lib) {
 
         //Get joined activities
         super.addAction({
@@ -28,7 +28,7 @@ class JoinActivityController extends BaseCtrl {
                     ],
                     include: [
                         {
-                            model: db.Users,
+                            model: lib.db.Users,
                             attributes: {
                                 exclude: ['password', 'mobile', 'wechat']
                             }

@@ -1,13 +1,14 @@
 var BaseCtrl = require('./base.controller');
 var UserReturnModel = require('../returnmodels').UserReturnModel;
+var jwt = require('jsonwebtoken');
 
 class UserController extends BaseCtrl {
-    constructor(db) {
-        super(db);
-        this.initalAction();
+    constructor(lib) {
+        super(lib);
+        this.initalAction(lib);
 
     }
-    initalAction() {
+    initalAction(lib) {
 
         //Get users
         super.addAction({
@@ -29,7 +30,10 @@ class UserController extends BaseCtrl {
                     ]
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data });
+                res.send({
+                    isSuccess: true,
+                    data: data
+                });
                 next();
             });
 
@@ -37,7 +41,7 @@ class UserController extends BaseCtrl {
 
         //Get user by id
         super.addAction({
-            path: '/users/:id',
+            path: '/users/id/:id',
             method: 'GET'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
@@ -45,7 +49,16 @@ class UserController extends BaseCtrl {
                 method: 'findById',
                 object: req.params.id
             }, (data) => {
-                res.send(new UserReturnModel(data))
+                if (data) {
+                    res.send(new UserReturnModel(data))
+                } else {
+                    res.send({
+                        isSuccess: false,
+                        errors: [{
+                            message: 'user.noexist'
+                        }]
+                    })
+                }
                 next();
             });
 
@@ -54,7 +67,8 @@ class UserController extends BaseCtrl {
         //Register a new user
         super.addAction({
             path: '/users',
-            method: 'POST'
+            method: 'POST',
+            name: 'user_register_ignore',
         }, (req, res, next) => {
             super.excuteDb(res, next, {
                 dbModel: 'Users',
@@ -77,6 +91,53 @@ class UserController extends BaseCtrl {
                 object: req.params
             }, (data) => {
                 res.send(new UserReturnModel(data));
+                next();
+            });
+        })
+
+        //user login
+        super.addAction({
+            path: '/users/mobile/:mobile',
+            method: 'GET',
+            name: 'user_login_ignore',
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'Users',
+                method: 'findOne',
+                object: {
+                    where: {
+                        mobile: req.params.mobile,
+                        password: req.params.password
+                    },
+                    attributes: {
+                        exclude: ['password']
+                    }
+                }
+            }, (data) => {
+                if (data) {
+                    var user = new UserReturnModel(data);
+                    var token = jwt.sign({
+                        data: {
+                            isAuthorize: true,
+                            mobile: user.data.mobile,
+                            role: 'normal'
+                        }
+
+                    }, lib.config.secretKey, {
+                        expiresIn: '168h'
+                    })
+                    res.send({
+                        user: user,
+                        token: token
+                    })
+                } else {
+                    res.send({
+                        isSuccess: false,
+                        errors: [{
+                            message: 'user.noexist'
+                        }]
+                    })
+                }
                 next();
             });
         })

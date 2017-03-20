@@ -2,11 +2,11 @@ var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
 class AppraiseController extends BaseCtrl {
-    constructor(db) {
-        super(db);
-        this.initalAction(db);
+    constructor(lib) {
+        super(lib);
+        this.initalAction(lib);
     }
-    initalAction(db) {
+    initalAction(lib) {
 
         //Get all my good appraise
         super.addAction({
@@ -28,7 +28,7 @@ class AppraiseController extends BaseCtrl {
                     ],
                     include: [
                         {
-                            model: db.Users,
+                            model: lib.db.Users,
                             attributes: {
                                 exclude: ['password', 'wechat', 'mobile']
                             }

@@ -2,11 +2,11 @@ var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
 class InviteActivityController extends BaseCtrl {
-    constructor(db) {
-        super(db);
-        this.initalAction(db);
+    constructor(lib) {
+        super(lib);
+        this.initalAction(lib);
     }
-    initalAction(db) {
+    initalAction(lib) {
 
         //Get my invited activities
         super.addAction({
@@ -28,7 +28,7 @@ class InviteActivityController extends BaseCtrl {
                     ],
                     include: [
                         {
-                            model: db.Users,
+                            model: lib.db.Users,
                             attributes: {
                                 exclude: ['password', 'wechat', 'mobile']
                             }
@@ -62,7 +62,7 @@ class InviteActivityController extends BaseCtrl {
                     ],
                     include: [
                         {
-                            model: db.Users,
+                            model: lib.db.Users,
                             attributes: {
                                 exclude: ['password', 'wechat', 'mobile']
                             }

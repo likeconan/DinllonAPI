@@ -1,8 +1,8 @@
 class BaseController {
-    constructor(db) {
+    constructor(lib) {
         this.actions = [];
         this.server = null;
-        this.db = db;
+        this.db = lib.db;
     }
 
     setUpActions(app) {
@@ -46,7 +46,7 @@ class BaseController {
                             : [
                                 {
                                     name: err.name,
-                                    message: err.original.constraint + "." + err.original.code
+                                    message: err.message
                                 }
                             ];
                         res.send({ isSuccess: false, errors: errors });

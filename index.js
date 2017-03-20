@@ -13,7 +13,7 @@ server.use(restify.bodyParser({
     mapFiles: false,
     overrideParams: false,
     keepExtensions: true,
-    uploadDir: 'F:/Upload/Original',
+    uploadDir: config.filePath,
     multiples: true,
     hash: 'sha1'
 }));
@@ -25,15 +25,31 @@ server.use(restify.CORS({
 /**
 Validate each request, as long as there is a schema for it
 */
-// server.use(function(req, res, next) { 	var results =
-// lib.schemaValidator.validateRequest(req) 	if(results.valid) { 		next() 	}
-// else { 		res.send(400, results) 	} }) server.use(function (req, res, next) {
-// var token = req.headers['x-access-token'];     if (token) {
-// json.verify(token, config.secretKey, function (err, decoded) {             if
-// (err) {                 res.json({ success: false })             } else {
-// req.decoded = decoded;                 next();             }    })  } else {
-// return res.send(403, {             success: false,    message: 'No token' });
-//     } })
+
+
+
+server.use(function (req, res, next) {
+    if (lib.helpers.excludeRoutes(req.route.name)) {
+        next();
+        return;
+    }
+    var token = req.headers['x-access-token'];
+    if (token) {
+        json.verify(token, config.secretKey, function (err, decoded) {
+            if (err || decoded.data.isAuthorize) {
+                res.send(403);
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        })
+    } else {
+        return res.send(403, {
+            success: false,
+            message: 'No token'
+        });
+    }
+})
 
 lib
     .helpers

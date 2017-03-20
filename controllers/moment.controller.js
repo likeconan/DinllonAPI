@@ -2,12 +2,12 @@ var BaseCtrl = require('./base.controller');
 var fs = require('fs');
 
 class MomentController extends BaseCtrl {
-    constructor(db) {
-        super(db);
-        this.initalAction(db);
+    constructor(lib) {
+        super(lib);
+        this.initalAction(lib);
 
     }
-    initalAction(db) {
+    initalAction(lib) {
 
         //Get moments
         super.addAction({
@@ -27,17 +27,20 @@ class MomentController extends BaseCtrl {
                         ['createdAt', 'DESC']
                     ],
                     include: [{
-                        model: db.Users,
+                        model: lib.db.Users,
                         attributes: {
                             exclude: ['password']
                         },
                     }, {
-                        model: db.Images,
+                        model: lib.db.Images,
                         attributes: ['url']
                     }]
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data })
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
                 next();
             });
 
