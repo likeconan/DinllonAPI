@@ -6,6 +6,16 @@ var restify = require('restify'),
     config = lib.config
 
 var server = restify.createServer(config.server);
+
+restify
+    .CORS
+    .ALLOW_HEADERS
+    .push('x-access-token');
+
+server.use(restify.CORS({origins: ['http://localhost:3000']}))
+
+server.use(restify.fullResponse());
+
 server.use(restify.queryParser());
 server.use(restify.bodyParser({
     maxBodySize: 1024 * 1024 * 2,
@@ -18,15 +28,9 @@ server.use(restify.bodyParser({
     hash: 'sha1'
 }));
 
-server.use(restify.CORS({
-    origins: ['http://localhost:3000'],
-}))
-
 /**
 Validate each request, as long as there is a schema for it
 */
-
-
 
 server.use(function (req, res, next) {
     if (lib.helpers.excludeRoutes(req.route.name)) {
@@ -35,17 +39,18 @@ server.use(function (req, res, next) {
     }
     var token = req.headers['x-access-token'];
     if (token) {
-        json.verify(token, config.secretKey, function (err, decoded) {
-            if (err || decoded.data.isAuthorize) {
-                res.send(403, {
-                    success: false,
-                    message: 'Not authorized'
-                });
-            } else {
-                req.decoded = decoded;
-                next();
-            }
-        })
+        json
+            .verify(token, config.secretKey, function (err, decoded) {
+                if (err || decoded.data.isAuthorize) {
+                    res.send(403, {
+                        success: false,
+                        message: 'Not authorized'
+                    });
+                } else {
+                    req.decoded = decoded;
+                    next();
+                }
+            })
     } else {
         return res.send(403, {
             success: false,
