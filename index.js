@@ -37,7 +37,10 @@ server.use(function (req, res, next) {
     if (token) {
         json.verify(token, config.secretKey, function (err, decoded) {
             if (err || decoded.data.isAuthorize) {
-                res.send(403);
+                res.send(403, {
+                    success: false,
+                    message: 'Not authorized'
+                });
             } else {
                 req.decoded = decoded;
                 next();

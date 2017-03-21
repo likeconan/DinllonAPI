@@ -97,7 +97,7 @@ class UserController extends BaseCtrl {
 
         //user login
         super.addAction({
-            path: '/users/mobile/:mobile',
+            path: '/users/mobile',
             method: 'GET',
             name: 'user_login_ignore',
         }, (req, res, next) => {
@@ -127,8 +127,12 @@ class UserController extends BaseCtrl {
                         expiresIn: '168h'
                     })
                     res.send({
-                        user: user,
-                        token: token
+                        isSuccess: true,
+                        data: {
+                            user: user,
+                            token: token
+                        }
+
                     })
                 } else {
                     res.send({
