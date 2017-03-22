@@ -12,6 +12,7 @@ class MomentController extends BaseCtrl {
         //Get moments
         super.addAction({
             path: '/moments',
+            name: 'search_moment_ignore',
             method: 'GET'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
@@ -26,21 +27,20 @@ class MomentController extends BaseCtrl {
                     order: [
                         ['createdAt', 'DESC']
                     ],
-                    include: [{
-                        model: lib.db.Users,
-                        attributes: {
-                            exclude: ['password']
-                        },
-                    }, {
-                        model: lib.db.Images,
-                        attributes: ['url']
-                    }]
+                    include: [
+                        {
+                            model: lib.db.Users,
+                            attributes: {
+                                exclude: ['password']
+                            }
+                        }, {
+                            model: lib.db.Images,
+                            attributes: ['url']
+                        }
+                    ]
                 }
             }, (data) => {
-                res.send({
-                    isSuccess: true,
-                    data: data
-                })
+                res.send({isSuccess: true, data: data})
                 next();
             });
 

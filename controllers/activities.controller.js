@@ -8,9 +8,10 @@ class ActivityController extends BaseCtrl {
     }
     initalAction(lib) {
 
-        //Get moments
+        //Get activities
         super.addAction({
             path: '/activities',
+            name: 'search_activity_ignore',
             method: 'GET'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
@@ -38,7 +39,7 @@ class ActivityController extends BaseCtrl {
                     ]
                 }
             }, (data) => {
-                res.send({ isSuccess: true, data: data })
+                res.send({isSuccess: true, data: data})
                 next();
             });
 
