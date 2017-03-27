@@ -11,11 +11,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING
         },
         userId: {
-            allowNull: false,
             type: DataTypes.UUID,
+            allowNull: false,
             references: {
                 model: 'Users',
                 key: 'uuid'
+            },
+            validate:{
+                isNotNull:{msg:'userId'}
             }
         },
         isDeleted: {

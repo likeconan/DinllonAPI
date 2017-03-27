@@ -68,11 +68,30 @@ class UserController extends BaseCtrl {
         super.addAction({
             path: '/users/authorize',
             method: 'GET',
-            name: 'user_authorize_ignore',
+            name: 'user_authorize_ignore'
         }, (req, res, next) => {
-            if (req.decoded && req.decoded.isAuthorize) {
-                res.send(req.decoded);
+            var token = req.headers['x-access-token'];
+            if (token) {
+                jwt
+                    .verify(token, lib.config.secretKey, function (err, decoded) {
+                        res.send({
+                            isSuccess: true,
+                            data: !err && decoded && decoded.data.isAuthorize ? decoded.data : {
+                                isAuthorize: false,
+                                loggedUser: {}
+                            }
+                        });
+                    })
+            } else {
+                res.send({
+                    isSuccess: true,
+                    data: {
+                        isAuthorize: false,
+                        loggedUser: {}
+                    }
+                });
             }
+
         })
 
         //Register a new user
@@ -130,8 +149,7 @@ class UserController extends BaseCtrl {
                     var token = jwt.sign({
                         data: {
                             isAuthorize: true,
-                            loggedUser: user.data,
-                            role: 'normal'
+                            loggedUser: user.data
                         }
                     }, lib.config.secretKey, lib.config.expiresIn)
 
@@ -141,7 +159,6 @@ class UserController extends BaseCtrl {
                             user: user.data,
                             token: token
                         }
-
                     })
                 } else {
                     res.send({
