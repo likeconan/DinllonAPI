@@ -64,6 +64,17 @@ class UserController extends BaseCtrl {
 
         });
 
+        // check if user isAuthorize
+        super.addAction({
+            path: '/users/authorize',
+            method: 'GET',
+            name: 'user_authorize_ignore',
+        }, (req, res, next) => {
+            if (req.decoded && req.decoded.isAuthorize) {
+                res.send(req.decoded);
+            }
+        })
+
         //Register a new user
         super.addAction({
             path: '/users',
@@ -75,22 +86,22 @@ class UserController extends BaseCtrl {
                 method: 'create',
                 object: req.params
             }, (data) => {
-                res.send(new UserReturnModel(data));
-                next();
-            });
-        })
+                var user = new UserReturnModel(data);
+                var token = jwt.sign({
+                    data: {
+                        isAuthorize: true,
+                        loggedUser: user.data
+                    }
+                }, lib.config.secretKey, lib.config.expiresIn);
 
-        // Update user profile
-        super.addAction({
-            path: '/users',
-            method: 'PUT'
-        }, (req, res, next) => {
-            super.excuteDb(res, next, {
-                dbModel: 'Users',
-                method: 'create',
-                object: req.params
-            }, (data) => {
-                res.send(new UserReturnModel(data));
+                res.send({
+                    isSuccess: true,
+                    data: {
+                        user: user.data,
+                        token: token
+                    }
+
+                })
                 next();
             });
         })
@@ -119,17 +130,15 @@ class UserController extends BaseCtrl {
                     var token = jwt.sign({
                         data: {
                             isAuthorize: true,
-                            mobile: user.data.mobile,
+                            loggedUser: user.data,
                             role: 'normal'
                         }
+                    }, lib.config.secretKey, lib.config.expiresIn)
 
-                    }, lib.config.secretKey, {
-                        expiresIn: '168h'
-                    })
                     res.send({
                         isSuccess: true,
                         data: {
-                            user: user,
+                            user: user.data,
                             token: token
                         }
 
@@ -142,6 +151,21 @@ class UserController extends BaseCtrl {
                         }]
                     })
                 }
+                next();
+            });
+        })
+
+        // Update user profile
+        super.addAction({
+            path: '/users',
+            method: 'PUT'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'Users',
+                method: 'create',
+                object: req.params
+            }, (data) => {
+                res.send(new UserReturnModel(data));
                 next();
             });
         })

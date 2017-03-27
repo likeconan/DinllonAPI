@@ -12,7 +12,9 @@ restify
     .ALLOW_HEADERS
     .push('x-access-token');
 
-server.use(restify.CORS({origins: ['http://localhost:3000']}))
+server.use(restify.CORS({
+    origins: ['http://localhost:3000']
+}))
 
 server.use(restify.fullResponse());
 
@@ -41,7 +43,7 @@ server.use(function (req, res, next) {
     if (token) {
         json
             .verify(token, config.secretKey, function (err, decoded) {
-                if (err || decoded.data.isAuthorize) {
+                if (err || !decoded.data.isAuthorize) {
                     res.send(403, {
                         success: false,
                         message: 'Not authorized'

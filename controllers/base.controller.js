@@ -9,7 +9,10 @@ class BaseController {
         this.server = app;
         for (let act of this.actions) {
             var method = act['spec']['method'];
-            app[method.toLowerCase()]({ name: act['spec']['name'], path: act['spec']['path'] }, act['action']);
+            app[method.toLowerCase()]({
+                name: act['spec']['name'],
+                path: act['spec']['path']
+            }, act['action']);
         }
     }
     addAction(spec, fn) {
@@ -26,30 +29,30 @@ class BaseController {
         try {
             var process = spec.options ?
                 this
-                    .db[spec.dbModel][spec.method](spec.object, spec.options) :
+                .db[spec.dbModel][spec.method](spec.object, spec.options) :
                 this
-                    .db[spec.dbModel][spec.method](spec.object);
+                .db[spec.dbModel][spec.method](spec.object);
 
             process.then((data) => {
-                try {
-                    if (action) {
-                        action(data);
+                    try {
+                        if (action) {
+                            action(data);
+                        }
+                    } catch (error) {
+                        res.send(500, error);
                     }
-                } catch (error) {
-                    res.send(500, error);
-                }
-            })
+                })
                 .catch((err) => {
                     try {
-                        var errors = err.errors && err.errors.length > 0
-                            ? err.errors
-                            : [
-                                {
-                                    name: err.name,
-                                    message: err.message
-                                }
-                            ];
-                        res.send({ isSuccess: false, errors: errors });
+                        var errors = err.errors && err.errors.length > 0 ?
+                            err.errors : [{
+                                name: err.name,
+                                message: err.name === 'SequelizeUniqueConstraintError' ? err.original.constraint + '_' + err.original.code : err.message
+                            }];
+                        res.send({
+                            isSuccess: false,
+                            errors: errors
+                        });
                         next();
                     } catch (error) {
                         res.send(500, error);

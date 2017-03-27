@@ -27,9 +27,10 @@ module.exports = function (sequelize, DataTypes) {
         headPic: DataTypes.STRING,
         mobile: {
             type: DataTypes.STRING,
-            allowNull: false,
             unique: {
-                msg: 'Mobile should be unique'
+                args: true,
+                message: 'Mobile must be unique.',
+                fields: [sequelize.fn('lower', sequelize.col('mobile'))]
             },
             validate: {
                 notEmpty: {
@@ -52,15 +53,14 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         }
-    },
-        {
-            classMethods: {
-                associate: function (models) {
-                    // associations can be defined here
-                    
-                }
+    }, {
+        classMethods: {
+            associate: function (models) {
+                // associations can be defined here
+
             }
-        });
+        }
+    });
 
     return Users;
 };
