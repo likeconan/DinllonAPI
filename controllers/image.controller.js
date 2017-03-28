@@ -25,6 +25,7 @@ class ImageController extends BaseCtrl {
                     relatedId: req.relatedId,
                 });
             }
+
             if (images.length > 0) {
                 super.excuteDb(res, next, {
                     dbModel: 'Images',
@@ -32,8 +33,15 @@ class ImageController extends BaseCtrl {
                     object: images
                 });
             }
-            req.resData.dataValues.images = images.map((img) => { return img.url });
-            res.send({ isSuccess: true, data: req.resData });
+            req.resData.dataValues.Images = images.map((img) => {
+                return {
+                    url: img.url
+                }
+            });
+            res.send({
+                isSuccess: true,
+                data: req.resData
+            });
             next();
 
         });

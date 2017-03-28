@@ -12,28 +12,29 @@ module.exports = function (sequelize, DataTypes) {
         },
         userId: {
             type: DataTypes.UUID,
-            allowNull: false,
             references: {
                 model: 'Users',
                 key: 'uuid'
             },
-            validate:{
-                isNotNull:{msg:'userId'}
-            }
+            allowNull: false
         },
         isDeleted: {
             type: DataTypes.BOOLEAN
         }
-    },
-        {
-            classMethods: {
-                associate: function (models) {
-                    // associations can be defined here
-                    models.Moments.belongsTo(models.Users, { foreignKey: 'userId' });
-                    models.Moments.hasMany(models.Images, { foreignKey: 'relatedId', constraints: false });
-                }
+    }, {
+        classMethods: {
+            associate: function (models) {
+                // associations can be defined here
+                models.Moments.belongsTo(models.Users, {
+                    foreignKey: 'userId'
+                });
+                models.Moments.hasMany(models.Images, {
+                    foreignKey: 'relatedId',
+                    constraints: false
+                });
             }
-        });
+        }
+    });
 
     return Moments;
 };
