@@ -35,6 +35,9 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER
             //1 for created; 2 for inprogress; 3 for success; 4 for failed
         },
+        isAuthorize: {
+            type: DataTypes.BOOLEAN
+        },
         isDeleted: {
             type: DataTypes.BOOLEAN
         }
@@ -44,7 +47,9 @@ module.exports = function (sequelize, DataTypes) {
                 // associations can be defined here
                 models
                     .Activities
-                    .belongsTo(models.Users, {foreignKey: 'userId'})
+                    .belongsTo(models.Users, {
+                        foreignKey: 'userId'
+                    })
                 models
                     .Activities
                     .hasMany(models.Images, {

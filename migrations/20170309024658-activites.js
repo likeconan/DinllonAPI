@@ -44,6 +44,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 1
       },
+      isAuthorize: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       isDeleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
@@ -56,7 +60,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, { logging: console.log });
+    }, {
+      logging: console.log
+    });
 
     //Moments table
     queryInterface.createTable('Moments', {
@@ -88,7 +94,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, { logging: console.log });
+    }, {
+      logging: console.log
+    });
 
   },
 
