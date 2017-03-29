@@ -46,7 +46,7 @@ module.exports = {
       },
       isAuthorize: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: true
       },
       isDeleted: {
         type: Sequelize.BOOLEAN,

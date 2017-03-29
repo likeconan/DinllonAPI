@@ -21,25 +21,27 @@ class ActivityController extends BaseCtrl {
                     limit: 1,
                     offset: req.params.offset,
                     where: {
-                        isDeleted: false
+                        isDeleted: false,
+                        isAuthorize: true
                     },
                     order: [
                         ['createdAt', 'DESC']
                     ],
-                    include: [
-                        {
-                            model: lib.db.Users,
-                            attributes: {
-                                exclude: ['password', 'mobile', 'wechat']
-                            }
-                        }, {
-                            model: lib.db.Images,
-                            attributes: ['url']
+                    include: [{
+                        model: lib.db.Users,
+                        attributes: {
+                            exclude: ['password', 'mobile', 'wechat']
                         }
-                    ]
+                    }, {
+                        model: lib.db.Images,
+                        attributes: ['url']
+                    }]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data})
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
                 next();
             });
 
