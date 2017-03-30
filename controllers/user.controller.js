@@ -42,6 +42,7 @@ class UserController extends BaseCtrl {
         //Get user by id
         super.addAction({
             path: '/users/id/:id',
+            name: 'getuser_profile_ignore',
             method: 'GET'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
@@ -174,13 +175,18 @@ class UserController extends BaseCtrl {
 
         // Update user profile
         super.addAction({
-            path: '/users',
+            path: '/users/id/:id',
             method: 'PUT'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
                 dbModel: 'Users',
-                method: 'create',
-                object: req.params
+                method: 'update',
+                object: req.params,
+                options: {
+                    where: {
+                        uuid: req.params.id
+                    }
+                }
             }, (data) => {
                 res.send(new UserReturnModel(data));
                 next();
