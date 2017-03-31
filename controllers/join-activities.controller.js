@@ -26,17 +26,18 @@ class JoinActivityController extends BaseCtrl {
                     order: [
                         ['createdAt', 'DESC']
                     ],
-                    include: [
-                        {
-                            model: lib.db.Users,
-                            attributes: {
-                                exclude: ['password', 'mobile', 'wechat']
-                            }
+                    include: [{
+                        model: lib.db.Users,
+                        attributes: {
+                            exclude: ['password', 'mobile', 'wechat']
                         }
-                    ]
+                    }]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data})
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
                 next();
             });
 
@@ -52,7 +53,10 @@ class JoinActivityController extends BaseCtrl {
                 method: 'create',
                 object: req.params
             }, (data) => {
-                res.send({isSuccess: true, data: data});
+                res.send({
+                    isSuccess: true,
+                    data: data
+                });
             });
         });
 
@@ -71,7 +75,10 @@ class JoinActivityController extends BaseCtrl {
                     }
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data});
+                res.send({
+                    isSuccess: true,
+                    data: data
+                });
             });
         });
 

@@ -71,27 +71,33 @@ class UserController extends BaseCtrl {
             method: 'GET',
             name: 'user_authorize_ignore'
         }, (req, res, next) => {
-            var token = req.headers['x-access-token'];
-            if (token) {
-                jwt
-                    .verify(token, lib.config.secretKey, function (err, decoded) {
+            jwt.verify(req.headers['x-access-token'], lib.config.secretKey, (err, decoded) => {
+                if (!err && decoded && decoded.data.isAuthorize) {
+                    super.excuteDb(res, next, {
+                        dbModel: 'Users',
+                        method: 'findById',
+                        object: decoded.data.loggedUserId
+                    }, (data) => {
+                        var user = new UserReturnModel(data);
                         res.send({
-                            isSuccess: true,
-                            data: !err && decoded && decoded.data.isAuthorize ? decoded.data : {
-                                isAuthorize: false,
-                                loggedUser: {}
+                            isSuccess: user.isSuccess,
+                            data: {
+                                isAuthorize: true,
+                                loggedUser: user.data
                             }
-                        });
+                        })
+                        next();
+                    });
+                } else {
+                    res.send({
+                        isSuccess: true,
+                        data: {
+                            isAuthorize: false,
+                            loggedUser: {}
+                        }
                     })
-            } else {
-                res.send({
-                    isSuccess: true,
-                    data: {
-                        isAuthorize: false,
-                        loggedUser: {}
-                    }
-                });
-            }
+                }
+            })
 
         })
 
@@ -110,7 +116,7 @@ class UserController extends BaseCtrl {
                 var token = jwt.sign({
                     data: {
                         isAuthorize: true,
-                        loggedUser: user.data
+                        loggedUserId: user.data.uuid
                     }
                 }, lib.config.secretKey, lib.config.expiresIn);
 
@@ -150,7 +156,7 @@ class UserController extends BaseCtrl {
                     var token = jwt.sign({
                         data: {
                             isAuthorize: true,
-                            loggedUser: user.data
+                            loggedUserId: user.data.uuid
                         }
                     }, lib.config.secretKey, lib.config.expiresIn)
 
