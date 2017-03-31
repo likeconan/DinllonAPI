@@ -175,7 +175,7 @@ class UserController extends BaseCtrl {
 
         // Update user profile
         super.addAction({
-            path: '/users/id/:id',
+            path: '/users/editprofile',
             method: 'PUT'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
@@ -184,11 +184,14 @@ class UserController extends BaseCtrl {
                 object: req.params,
                 options: {
                     where: {
-                        uuid: req.params.id
-                    }
+                        uuid: req.params.uuid
+                    },
+                    fields: ['nickName', 'goingOn', 'birthday', 'school', 'work', 'wechat']
                 }
             }, (data) => {
-                res.send(new UserReturnModel(data));
+                res.send({
+                    isSuccess: true
+                });
                 next();
             });
         })

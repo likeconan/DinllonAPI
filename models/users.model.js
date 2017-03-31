@@ -28,9 +28,7 @@ module.exports = function (sequelize, DataTypes) {
         mobile: {
             type: DataTypes.STRING,
             unique: {
-                args: true,
-                message: 'Mobile must be unique.',
-                fields: [sequelize.fn('lower', sequelize.col('mobile'))]
+                msg: 'Mobile must be unique.',
             },
             validate: {
                 notEmpty: {
