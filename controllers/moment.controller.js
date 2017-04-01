@@ -27,20 +27,61 @@ class MomentController extends BaseCtrl {
                     order: [
                         ['createdAt', 'DESC']
                     ],
-                    include: [
-                        {
-                            model: lib.db.Users,
-                            attributes: {
-                                exclude: ['password']
-                            }
-                        }, {
-                            model: lib.db.Images,
-                            attributes: ['url']
+                    include: [{
+                        model: lib.db.Users,
+                        attributes: {
+                            exclude: ['password']
                         }
-                    ]
+                    }, {
+                        model: lib.db.Images,
+                        attributes: ['url']
+                    }]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data})
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
+                next();
+            });
+
+        });
+
+        //Get user's moments
+
+        super.addAction({
+            path: '/moments/:userId',
+            name: 'getuser_moment_ignore',
+            method: 'GET'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'Moments',
+                method: 'findAll',
+                object: {
+                    limit: 10,
+                    offset: req.params.offset,
+                    where: {
+                        userId: req.params.userId,
+                        isDeleted: false
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                    ],
+                    include: [{
+                        model: lib.db.Users,
+                        attributes: {
+                            exclude: ['password','mobile','wechat']
+                        }
+                    }, {
+                        model: lib.db.Images,
+                        attributes: ['url']
+                    }]
+                }
+            }, (data) => {
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
                 next();
             });
 

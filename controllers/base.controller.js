@@ -58,10 +58,11 @@ class BaseController {
                         res.send(500, error);
                         next();
                     }
-
+                    console.log(err);
                 })
         } catch (error) {
             res.send(500, error);
+            console.log(err);
             next();
         }
 

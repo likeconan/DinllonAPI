@@ -51,7 +51,14 @@ class UserController extends BaseCtrl {
                 object: req.params.id
             }, (data) => {
                 if (data) {
-                    res.send(new UserReturnModel(data))
+                    var user = new UserReturnModel(data);
+                    res.send({
+                        isSuccess: user.isSuccess,
+                        data: {
+                            user: user.data,
+                            isOwn: req.decoded && req.decoded.data.loggedUserId === req.params.id,
+                        }
+                    })
                 } else {
                     res.send({
                         isSuccess: false,
@@ -71,34 +78,31 @@ class UserController extends BaseCtrl {
             method: 'GET',
             name: 'user_authorize_ignore'
         }, (req, res, next) => {
-            jwt.verify(req.headers['x-access-token'], lib.config.secretKey, (err, decoded) => {
-                if (!err && decoded && decoded.data.isAuthorize) {
-                    super.excuteDb(res, next, {
-                        dbModel: 'Users',
-                        method: 'findById',
-                        object: decoded.data.loggedUserId
-                    }, (data) => {
-                        var user = new UserReturnModel(data);
-                        res.send({
-                            isSuccess: user.isSuccess,
-                            data: {
-                                isAuthorize: true,
-                                loggedUser: user.data
-                            }
-                        })
-                        next();
-                    });
-                } else {
+            if (req.decoded) {
+                super.excuteDb(res, next, {
+                    dbModel: 'Users',
+                    method: 'findById',
+                    object: req.decoded.data.loggedUserId
+                }, (data) => {
+                    var user = new UserReturnModel(data);
                     res.send({
-                        isSuccess: true,
+                        isSuccess: user.isSuccess,
                         data: {
-                            isAuthorize: false,
-                            loggedUser: {}
+                            isAuthorize: true,
+                            loggedUser: user.data
                         }
                     })
-                }
-            })
-
+                    next();
+                });
+            } else {
+                res.send({
+                    isSuccess: true,
+                    data: {
+                        isAuthorize: false,
+                        loggedUser: {}
+                    }
+                })
+            }
         })
 
         //Register a new user

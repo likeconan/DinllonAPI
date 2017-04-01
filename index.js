@@ -35,30 +35,24 @@ Validate each request, as long as there is a schema for it
 */
 
 server.use(function (req, res, next) {
-    if (lib.helpers.excludeRoutes(req.route.name)) {
-        next();
-        return;
-    }
-    var token = req.headers['x-access-token'];
-    if (token) {
-        json
-            .verify(token, config.secretKey, function (err, decoded) {
-                if (err || !decoded.data.isAuthorize) {
-                    res.send(403, {
-                        success: false,
-                        message: 'Not authorized'
-                    });
-                } else {
-                    req.decoded = decoded;
-                    next();
-                }
-            })
-    } else {
-        return res.send(403, {
-            success: false,
-            message: 'No token'
-        });
-    }
+
+    json
+        .verify(req.headers['x-access-token'], config.secretKey, function (err, decoded) {
+            if (lib.helpers.excludeRoutes(req.route.name)) {
+                req.decoded = decoded;
+                next();
+                return;
+            }
+            if (err || !decoded.data.isAuthorize) {
+                res.send(403, {
+                    success: false,
+                    message: 'Not authorized'
+                });
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        })
 })
 
 lib
