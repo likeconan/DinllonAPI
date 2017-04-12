@@ -71,6 +71,13 @@ class ActivityController extends BaseCtrl {
                     include: [{
                         model: lib.db.Images,
                         attributes: ['url']
+                    }, {
+                        model: lib.db.JoinActivities,
+                        attributes: ['userId'],
+                        include: [{
+                            model: lib.db.Users,
+                            attributes: ['uuid', 'headPic', 'nickName']
+                        }]
                     }]
                 }
             }, (data) => {
@@ -82,6 +89,8 @@ class ActivityController extends BaseCtrl {
             });
 
         });
+
+
         //Create a activity
         super.addAction({
             path: '/activities',

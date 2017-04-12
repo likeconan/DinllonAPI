@@ -49,13 +49,19 @@ module.exports = function (sequelize, DataTypes) {
                     .Activities
                     .belongsTo(models.Users, {
                         foreignKey: 'userId'
-                    })
+                    });
                 models
                     .Activities
                     .hasMany(models.Images, {
                         foreignKey: 'relatedId',
                         constraints: false
-                    })
+                    });
+                models
+                    .Activities
+                    .hasMany(models.JoinActivities, {
+                        foreignKey: 'activityId',
+                        constraints: false
+                    });
             }
         }
     });
