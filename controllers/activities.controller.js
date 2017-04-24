@@ -35,6 +35,13 @@ class ActivityController extends BaseCtrl {
                     }, {
                         model: lib.db.Images,
                         attributes: ['url']
+                    }, {
+                        model: lib.db.JoinActivities,
+                        required: false,
+                        attributes: ['status'],
+                        where: {
+                            userId: req.decoded.data.loggedUserId
+                        }
                     }]
                 }
             }, (data) => {
