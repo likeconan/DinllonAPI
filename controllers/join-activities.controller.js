@@ -62,13 +62,13 @@ class JoinActivityController extends BaseCtrl {
 
         //Edit joined people
         super.addAction({
-            path: '/activities/join',
+            path: '/activities/join/:uuid',
             method: 'PUT'
         }, (req, res, next) => {
             super.excuteDb(res, next, {
                 dbModel: 'JoinActivities',
                 method: 'update',
-                object: req.params,
+                object: { status: 2 },
                 options: {
                     where: {
                         uuid: req.params.uuid

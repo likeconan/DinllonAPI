@@ -73,7 +73,7 @@ class ActivityController extends BaseCtrl {
                         attributes: ['url']
                     }, {
                         model: lib.db.JoinActivities,
-                        attributes: ['userId'],
+                        attributes: ['userId', 'uuid', 'status'],
                         include: [{
                             model: lib.db.Users,
                             attributes: ['uuid', 'headPic', 'nickName']
