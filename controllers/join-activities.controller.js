@@ -8,7 +8,7 @@ class JoinActivityController extends BaseCtrl {
     }
     initalAction(lib) {
 
-        //Get joined activities
+        //Get joined activity users
         super.addAction({
             path: '/activities/join/:activityId',
             method: 'GET'
@@ -32,6 +32,41 @@ class JoinActivityController extends BaseCtrl {
                             exclude: ['password', 'mobile', 'wechat']
                         }
                     }]
+                }
+            }, (data) => {
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
+                next();
+            });
+
+        });
+
+        //Get user's joined activities
+        super.addAction({
+            path: '/activities/join/user/:userId',
+            method: 'GET'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'JoinActivities',
+                method: 'findAll',
+                object: {
+                    where: {
+                        userId: req.params.userId,
+                        isDeleted: false
+                    },
+                    include: {
+                        model: lib.db.Activities,
+                        where: {
+                            isDeleted: false,
+                            isAuthorize: true,
+                            startedAt: {
+                                $gt: new Date()
+                            }
+                        }
+                    }
+
                 }
             }, (data) => {
                 res.send({

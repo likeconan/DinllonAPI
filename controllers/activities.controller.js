@@ -97,7 +97,6 @@ class ActivityController extends BaseCtrl {
 
         });
 
-
         //Create a activity
         super.addAction({
             path: '/activities',
