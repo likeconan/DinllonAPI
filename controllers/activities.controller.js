@@ -38,9 +38,9 @@ class ActivityController extends BaseCtrl {
                     }, {
                         model: lib.db.JoinActivities,
                         required: false,
-                        attributes: ['status'],
+                        attributes: ['status', 'uuid'],
                         where: {
-                            userId: req.decoded.data.loggedUserId
+                            userId: req.decoded ? req.decoded.data.loggedUserId : undefined
                         }
                     }]
                 }

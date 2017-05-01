@@ -117,6 +117,35 @@ class JoinActivityController extends BaseCtrl {
             });
         });
 
+        //cancel apply joined
+        super.addAction({
+            path: '/activities/join/delete/:uuid',
+            method: 'DEL'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'JoinActivities',
+                method: 'destroy',
+                object: {
+                    where: {
+                        uuid: req.params.uuid
+                    },
+                    force: true
+                }
+            }, (data) => {
+                res.send(data > 0 ?
+                    {
+                        isSuccess: true
+                    } :
+                    {
+                        isSuccess: false,
+                        errors: [{
+                            name: 'no_delete',
+                            message: 'cancel_apply_deleted_faild'
+                        }]
+                    });
+            });
+        });
+
     }
 }
 
