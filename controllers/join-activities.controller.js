@@ -54,12 +54,44 @@ class JoinActivityController extends BaseCtrl {
                 object: {
                     where: {
                         userId: req.params.userId,
-                        isDeleted: false
                     },
                     include: {
                         model: lib.db.Activities,
                         where: {
-                            isDeleted: false,
+                            isAuthorize: true,
+                            startedAt: {
+                                $gt: new Date()
+                            }
+                        }
+                    }
+
+                }
+            }, (data) => {
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
+                next();
+            });
+
+        });
+
+        //Get user's joined available activities
+        super.addAction({
+            path: '/activities/join/available/:userId',
+            method: 'GET'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'JoinActivities',
+                method: 'findAll',
+                object: {
+                    attributes: ['userId', 'uuid'],
+                    where: {
+                        userId: req.params.userId,
+                    },
+                    include: {
+                        model: lib.db.Activities,
+                        where: {
                             isAuthorize: true,
                             startedAt: {
                                 $gt: new Date()

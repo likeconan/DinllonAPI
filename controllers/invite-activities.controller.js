@@ -36,7 +36,7 @@ class InviteActivityController extends BaseCtrl {
                     ]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data})
+                res.send({ isSuccess: true, data: data })
                 next();
             });
 
@@ -70,7 +70,7 @@ class InviteActivityController extends BaseCtrl {
                     ]
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data})
+                res.send({ isSuccess: true, data: data })
                 next();
             });
 
@@ -86,7 +86,7 @@ class InviteActivityController extends BaseCtrl {
                 method: 'create',
                 object: req.params
             }, (data) => {
-                res.send({isSuccess: true, data: data});
+                res.send({ isSuccess: true, data: data });
             });
         });
 
@@ -105,10 +105,9 @@ class InviteActivityController extends BaseCtrl {
                     }
                 }
             }, (data) => {
-                res.send({isSuccess: true, data: data});
+                res.send({ isSuccess: true, data: data });
             });
         });
-
     }
 }
 

@@ -54,6 +54,39 @@ class ActivityController extends BaseCtrl {
 
         });
 
+        //get user available activities
+        super.addAction({
+            path: '/activities/available/:userId',
+            method: 'GET'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'Activities',
+                method: 'findAll',
+                object: {
+                    where: {
+                        userId: req.params.userId,
+                        isAuthorize: true,
+                        startedAt: {
+                            $gt: new Date()
+                        }
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                    ],
+                    include: [{
+                        model: lib.db.Images,
+                        attributes: ['url']
+                    }]
+                }
+            }, (data) => {
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
+                next();
+            });
+        });
+
         //get user's activity
 
         super.addAction({
