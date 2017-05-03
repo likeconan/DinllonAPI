@@ -96,6 +96,10 @@ class JoinActivityController extends BaseCtrl {
                             startedAt: {
                                 $gt: new Date()
                             }
+                        },
+                        include: {
+                            model: lib.db.Images,
+                            attributes: ['url']
                         }
                     }
 

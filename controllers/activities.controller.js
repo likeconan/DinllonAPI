@@ -94,6 +94,7 @@ class ActivityController extends BaseCtrl {
             name: 'getuser_activity_ignore',
             method: 'GET'
         }, (req, res, next) => {
+
             super.excuteDb(res, next, {
                 dbModel: 'Activities',
                 method: 'findAll',
@@ -101,13 +102,47 @@ class ActivityController extends BaseCtrl {
                     limit: 10,
                     offset: req.params.offset,
                     where: {
-                        isDeleted: false,
                         userId: req.params.userId,
                         isAuthorize: true
                     },
                     order: [
                         ['createdAt', 'DESC']
                     ],
+                    include: [{
+                        model: lib.db.Images,
+                        attributes: ['url']
+                    }, {
+                        model: lib.db.JoinActivities,
+                        attributes: ['userId', 'uuid', 'status'],
+                        include: [{
+                            model: lib.db.Users,
+                            attributes: ['uuid', 'headPic', 'nickName']
+                        }]
+                    }]
+                }
+            }, (data) => {
+                res.send({
+                    isSuccess: true,
+                    data: data
+                })
+                next();
+            });
+
+        });
+
+        super.addAction({
+            path: '/activities/one/:activityId',
+            name: 'get_activity_one_ignore',
+            method: 'GET'
+        }, (req, res, next) => {
+
+            super.excuteDb(res, next, {
+                dbModel: 'Activities',
+                method: 'findOne',
+                object: {
+                    where: {
+                        uuid: req.params.activityId
+                    },
                     include: [{
                         model: lib.db.Images,
                         attributes: ['url']
