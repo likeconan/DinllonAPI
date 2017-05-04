@@ -155,7 +155,7 @@ class JoinActivityController extends BaseCtrl {
 
         //cancel apply joined
         super.addAction({
-            path: '/activities/join/delete/:uuid',
+            path: '/activities/join/:uuid',
             method: 'DEL'
         }, (req, res, next) => {
             super.excuteDb(res, next, {

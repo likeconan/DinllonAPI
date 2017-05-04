@@ -182,6 +182,36 @@ class ActivityController extends BaseCtrl {
             });
         });
 
+        //delete activity
+        super.addAction({
+            path: '/activities/:uuid',
+            method: 'DEL'
+        }, (req, res, next) => {
+            super.excuteDb(res, next, {
+                dbModel: 'Activities',
+                method: 'destroy',
+                object: {
+                    where: {
+                        uuid: req.params.uuid
+                    },
+                    force: true
+                }
+            }, (data) => {
+                res.send(data > 0 ?
+                    {
+                        isSuccess: true
+                    } :
+                    {
+                        isSuccess: false,
+                        errors: [{
+                            name: 'no_delete',
+                            message: 'activity_deleted_faild'
+                        }]
+                    });
+            });
+        });
+
+
     }
 }
 
