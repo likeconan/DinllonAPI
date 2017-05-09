@@ -3,9 +3,16 @@ var restify = require('restify'),
     db = require('./models'),
     lib = require('./lib'),
     json = require('jsonwebtoken'),
-    config = lib.config
+    socketio = require('socket.io'),
+    config = lib.config;
 
 var server = restify.createServer(config.server);
+
+var io = socketio.listen(server.server);
+
+io.sockets.on('connection', function (socket) {
+    lib.helpers.setupSockets(socket, lib);
+});
 
 restify.CORS.ALLOW_HEADERS.push('x-access-token');
 
@@ -15,7 +22,6 @@ server.use(restify.CORS({
 
 function unknownMethodHandler(req, res) {
     if (req.method.toLowerCase() === 'options') {
-        console.log('received an options method request');
         var allowHeaders = ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'x-access-token', 'Origin', 'X-Requested-With']; // added Origin & X-Requested-With
 
         if (res.methods.indexOf('OPTIONS') === -1) res.methods.push('OPTIONS');
