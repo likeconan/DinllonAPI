@@ -21,8 +21,10 @@ class ActivityController extends BaseCtrl {
                     limit: 1,
                     offset: req.params.offset,
                     where: {
-                        isDeleted: false,
-                        isAuthorize: true
+                        isAuthorize: true,
+                        startedAt: {
+                            $gt: new Date()
+                        }
                     },
                     order: [
                         ['createdAt', 'DESC']
@@ -113,7 +115,7 @@ class ActivityController extends BaseCtrl {
                         attributes: ['url']
                     }, {
                         model: lib.db.JoinActivities,
-                        attributes: ['userId', 'uuid', 'status'],
+                        attributes: ['userId', 'uuid', 'status', 'activityId'],
                         include: [{
                             model: lib.db.Users,
                             attributes: ['uuid', 'headPic', 'nickName']

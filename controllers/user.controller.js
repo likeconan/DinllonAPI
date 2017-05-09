@@ -205,6 +205,31 @@ class UserController extends BaseCtrl {
                 next();
             });
         })
+
+        //get user's data count
+        super.addAction({
+            path: '/users/data/:userId',
+            name: 'get_user_data_ignore',
+            method: 'GET'
+        }, (req, res, next) => {
+            lib.db.sequelize.query(lib.queries.getCount, {
+                replacements: { id: req.params.userId ? req.params.userId : req.decoded.data.loggedUserId },
+                type: lib.db.sequelize.QueryTypes.SELECT
+            }).then(function (data) {
+                res.send({
+                    isSuccess: true,
+                    data: data[0]
+                });
+                next();
+            }, function (err) {
+                res.send({
+                    isSuccess: false,
+                    errors: [{
+                        message: 'unknow_error'
+                    }]
+                })
+            });
+        })
     }
 }
 

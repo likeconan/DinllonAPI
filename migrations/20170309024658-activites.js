@@ -61,8 +61,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     }, {
-      logging: console.log
-    });
+        logging: console.log
+      });
 
     //Moments table
     queryInterface.createTable('Moments', {
@@ -72,6 +72,9 @@ module.exports = {
         type: Sequelize.UUID
       },
       textContent: {
+        type: Sequelize.STRING
+      },
+      type: {
         type: Sequelize.STRING
       },
       userId: {
@@ -95,8 +98,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     }, {
-      logging: console.log
-    });
+        logging: console.log
+      });
 
   },
 
