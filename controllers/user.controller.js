@@ -1,6 +1,7 @@
 var BaseCtrl = require('./base.controller');
 var UserReturnModel = require('../returnmodels').UserReturnModel;
 var jwt = require('jsonwebtoken');
+var path = require('path');
 
 class UserController extends BaseCtrl {
     constructor(lib) {
@@ -78,7 +79,7 @@ class UserController extends BaseCtrl {
             method: 'GET',
             name: 'user_authorize_ignore'
         }, (req, res, next) => {
-            if (req.decoded) {
+            if (req.decoded.data.isAuthorize) {
                 super.excuteDb(res, next, {
                     dbModel: 'Users',
                     method: 'findById',
@@ -206,29 +207,71 @@ class UserController extends BaseCtrl {
             });
         })
 
+        // Update user profile image
+        super.addAction({
+            path: '/users/editprofile/image',
+            method: 'PUT'
+        }, (req, res, next) => {
+            var file = req.files.file;
+            var url = '/original/' + path.basename(file.path)
+            var obj = req.params.prop === "backPic" ?
+                {
+                    backPic: url
+                } :
+                {
+                    headPic: url
+                }
+            super.excuteDb(res, next, {
+                dbModel: 'Users',
+                method: 'update',
+                object: obj,
+                options: {
+                    where: {
+                        uuid: req.params.uuid
+                    },
+                    fields: [req.params.prop]
+                }
+            }, (data) => {
+                res.send({
+                    isSuccess: true,
+                    data: url
+                });
+                next();
+            });
+        })
+
         //get user's data count
         super.addAction({
             path: '/users/data/:userId',
             name: 'get_user_data_ignore',
             method: 'GET'
         }, (req, res, next) => {
-            lib.db.sequelize.query(lib.queries.getCount, {
-                replacements: { id: req.params.userId ? req.params.userId : req.decoded.data.loggedUserId },
-                type: lib.db.sequelize.QueryTypes.SELECT
-            }).then(function (data) {
+            var id = req.params.userId ? req.params.userId : req.decoded.data.loggedUserId;
+            if (id) {
+                lib.db.sequelize.query(lib.queries.getCount, {
+                    replacements: { id: id },
+                    type: lib.db.sequelize.QueryTypes.SELECT
+                }).then(function (data) {
+                    res.send({
+                        isSuccess: true,
+                        data: data[0]
+                    });
+                    next();
+                }, function (err) {
+                    res.send({
+                        isSuccess: false,
+                        errors: [{
+                            message: 'unknow_error'
+                        }]
+                    })
+                });
+            } else {
                 res.send({
                     isSuccess: true,
-                    data: data[0]
-                });
-                next();
-            }, function (err) {
-                res.send({
-                    isSuccess: false,
-                    errors: [{
-                        message: 'unknow_error'
-                    }]
+                    data: {}
                 })
-            });
+            }
+
         })
     }
 }

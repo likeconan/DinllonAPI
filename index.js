@@ -59,6 +59,11 @@ server.use(function (req, res, next) {
 
     json
         .verify(req.headers['x-access-token'], config.secretKey, function (err, decoded) {
+            decoded = decoded ? decoded : {
+                data: {
+                    isAuthorize: false
+                }
+            }
             if (lib.helpers.excludeRoutes(req.route.name)) {
                 req.decoded = decoded;
                 next();
